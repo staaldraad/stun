@@ -380,9 +380,18 @@ func (m *Message) Decode() error {
 		a.Value = b[:aL]
 		offset += aBuffL
 		b = b[aBuffL:]
-
 		m.Attributes = append(m.Attributes, a)
 	}
+	// check if left-over data
+	if len(buf[fullSize:]) > 0 {
+		a := RawAttribute{
+			Type:   AttrData,
+			Length: uint16(len(buf[fullSize:])),
+		}
+		a.Value = buf[fullSize:]
+		m.Attributes = append(m.Attributes, a)
+	}
+
 	return nil
 }
 
